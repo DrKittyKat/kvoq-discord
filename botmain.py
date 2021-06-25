@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
-import discord, datetime
-import asyncio, random, string, json, urllib, os, dotenv
+import discord
+import datetime
+import asyncio
+import random
+import string
+import json
+import urllib
+import os
 from discord_slash import SlashCommand
 from dotenv import load_dotenv
 
@@ -52,7 +58,7 @@ async def _indie(ctx_indie):
         await ctx_indie.send(embed=msgembed)
 
 
-@slash.slash(name="now playing", guild_ids=guild_ids)
+@slash.slash(name="nowplaying", guild_ids=guild_ids)
 async def _nowplaying(ctx_nowplaying):
     '''
     Get the current playing song, artist, and DJ
