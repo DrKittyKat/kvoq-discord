@@ -41,9 +41,45 @@ async def _ping(ctx_ping):
 async def on_message(message):
     if message.author == client.user:
         return
+    
+    
     if message.content == msg_prefix + "ping":
         print("Ping command recieved")
         await message.channel.send(f"Pong! ({client.latency*1000}ms)")
+
+
+    if message.content == msg_prefix + "indie":
+        if message.author.voice and message.author.voice.channel:
+            channel = message.author.voice.channel
+            vc = await channel.connect()
+            audio_source = discord.FFmpegPCMAudio(source='http://stream1.cprnetwork.org/cpr3_lo')
+            vc.play(audio_source)
+            msgembed = discord.Embed(title="You are listening to KVOQ, indie 102.3", thumbnail="/home/kitty/Desktop/kvoq-bot/indie1023-2-Clr-Circle-Logo-Print-201907.png", description=get_track_info(), color=0xF887D7)
+            await message.channel.send(embed=msgembed)
+            while not len(channel.members) <= 1:
+                await asyncio.sleep(30)
+            await vc.disconnect()
+        else:
+            msgembed = discord.Embed(description="You are not connected to any voice channel...", color=0xF887D7)
+            await message.channel.send(embed=msgembed)
+    
+    
+    if message.content == msg_prefix + "nowplaying":
+        msgembed = discord.Embed(title="Now Playing on KVOQ, indie 102.3", thumbnail="/home/kitty/Desktop/kvoq-bot/indie1023-2-Clr-Circle-Logo-Print-201907.png", description=get_track_info(), color=0xF887D7)
+        await message.channel.send(embed=msgembed)
+    
+    
+    if message.content == msg_prefix + "disconnect":
+        for x in client.voice_clients:
+            if(x.guild == message.guild):
+                x.stop()
+                await x.disconnect()
+                msgembed = discord.Embed(description="Disconnected!", color=0xF887D7)
+                return await message.channel.send(embed=msgembed)
+
+        msgembed = discord.Embed(description="I'm not connected to any voice channel!", color=0xF887D7)
+        return await message.channel.send(embed=msgembed)
+
 
 
 @slash.slash(name="indie", guild_ids=guild_ids)
@@ -66,13 +102,6 @@ async def _indie(ctx_indie):
         msgembed = discord.Embed(description="You are not connected to any voice channel...", color=0xF887D7)
         await ctx_indie.send(embed=msgembed)
 
-'''
-@client.event
-    async def on_message(message):
-        if message.author == client.user:
-            return
-        if message.content == msg_prefix + "indie":
-'''
 
 @slash.slash(name="nowplaying", guild_ids=guild_ids)
 async def _nowplaying(ctx_nowplaying):
