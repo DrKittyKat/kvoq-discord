@@ -43,7 +43,7 @@ async def on_message(message):
         return
     if message.content == msg_prefix + "ping":
         print("Ping command recieved")
-        await ctx_ping.send(f"Pong! ({client.latency*1000}ms)")
+        await message.channel.send(f"Pong! ({client.latency*1000}ms)")
 
 
 @slash.slash(name="indie", guild_ids=guild_ids)
