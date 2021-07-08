@@ -14,6 +14,7 @@ load_dotenv()
 
 client = discord.Client()
 slash = SlashCommand(client, sync_commands=True) # Declares slash commands through the client.
+msg_prefix = "nya-"
 
 if not discord.opus.is_loaded():
     discord.opus.load_opus('/home/container/lib/libopus.so') # This is a linux specific solution; change this to the path of the libopus library (can be download from https://opus-codec.org/downloads/ or built from source) if working in windows
@@ -36,6 +37,14 @@ async def _ping(ctx_ping):
     print("Ping command recieved")
     await ctx_ping.send(f"Pong! ({client.latency*1000}ms)")
 
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content == msg_prefix + "ping":
+        print("Ping command recieved")
+        await ctx_ping.send(f"Pong! ({client.latency*1000}ms)")
+
 
 @slash.slash(name="indie", guild_ids=guild_ids)
 async def _indie(ctx_indie):
@@ -57,6 +66,13 @@ async def _indie(ctx_indie):
         msgembed = discord.Embed(description="You are not connected to any voice channel...", color=0xF887D7)
         await ctx_indie.send(embed=msgembed)
 
+'''
+@client.event
+    async def on_message(message):
+        if message.author == client.user:
+            return
+        if message.content == msg_prefix + "indie":
+'''
 
 @slash.slash(name="nowplaying", guild_ids=guild_ids)
 async def _nowplaying(ctx_nowplaying):
